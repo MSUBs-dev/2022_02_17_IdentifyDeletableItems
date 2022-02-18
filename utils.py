@@ -59,11 +59,15 @@ def export_csv(i_dict: dict, name: str) -> None:
         name = name.replace('.csv', '')
     now = time.strftime("_%Y_%m_%d_%H%M%S")
     name = name + now + ".csv"
+
+    # change empty sets and lists to empty strings
     for key in i_dict:
         for subkey in i_dict[key]:
             val = i_dict[key][subkey]
             if not val:
                 i_dict[key][subkey] = ''
+
+    # actually do th eexport
     with open(name, mode='w+', newline='') as f:
         writer = csv.writer(f, delimiter=',')
         first_key = list(i_dict.keys())[0]

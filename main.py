@@ -5,6 +5,19 @@ from utils import export_csv
 from utils import load_csv
 from pprint import pprint
 
+
+def filter_to_books(i_dict):
+    out_data = {}
+    for k in i_dict:
+        nme = i_dict[k]['Name']
+        typ = nme.replace(' ', '')
+        typ = typ.lower()
+        typ = typ.split('-')[-1]
+        if typ in ['n', 'u', 'p', 'rs']:
+            out_data[key] = i_dict[key]
+    return out_data
+
+
 if __name__ == '__main__':
     items_path = 'in/items.csv'
     all_items = load_csv(items_path)
@@ -38,7 +51,8 @@ if __name__ == '__main__':
                 and (not chdrn or not any([all_items[k]['Bad'] for k in chdrn])) \
                 and not all_items.get(prent, {}).get('Bad', False):
             to_be_deleted[key] = all_items[key]
-    export_csv(to_be_deleted, 'out/delete')
+    tbd = filter_to_books(to_be_deleted)
+    export_csv(tbd, 'out/delete')
     print(len(all_items))
     print(len(to_be_deleted))
     print(len(all_items) - len(to_be_deleted))
