@@ -1,9 +1,9 @@
 from utils import llist_to_dlist
 from utils import dlist_to_dict
 from datetime import datetime
+from utils import export_csv
 from utils import load_csv
 from pprint import pprint
-
 
 if __name__ == '__main__':
     items_path = 'in/items.csv'
@@ -17,6 +17,10 @@ if __name__ == '__main__':
         all_items[key]['Children'] = set()
         all_items[key]['Age'] = (today - datetime.strptime(
             cdate, '%m/%d/%Y %I:%M %p')).days
+        if all_items[key]['Last Tran Date'] or all_items[key]['Total Onhand'] not in ['', '0']:
+            all_items[key]['Bad'] = True
+        else:
+            all_items[key]['Bad'] = False
     for key in all_items:
         parent = all_items[key]['Parent IID']
         if parent:
@@ -26,12 +30,15 @@ if __name__ == '__main__':
     for key in all_items:
         age = all_items[key]['Age']
         tdate = all_items[key]['Last Tran Date']
-        if not tdate and age > 120:
-            chdrn = all_items[key]['Children']
-            if not chdrn or not any([all_items[k]['Last Tran Date']
-                                     for k in chdrn]):
-                to_be_deleted[key] = all_items[key]
+        ttqoh = all_items[key]['Total Onhand']
+        chdrn = all_items[key]['Children']
+        prent = all_items[key]['Parent IID']
+        if not tdate and age > 120 \
+                and (not ttqoh or ttqoh == '0') \
+                and (not chdrn or not any([all_items[k]['Bad'] for k in chdrn])) \
+                and not all_items.get(prent, {}).get('Bad', False):
+            to_be_deleted[key] = all_items[key]
+    export_csv(to_be_deleted, 'out/delete')
     print(len(all_items))
     print(len(to_be_deleted))
     print(len(all_items) - len(to_be_deleted))
-

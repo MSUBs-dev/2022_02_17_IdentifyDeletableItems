@@ -54,13 +54,21 @@ def dlist_to_dict(dlist: list, key) -> dict:
     return out_data
 
 
-def export_csv(d_list: list, name: str) -> None:
+def export_csv(i_dict: dict, name: str) -> None:
     if name.endswith('.csv'):
         name = name.replace('.csv', '')
     now = time.strftime("_%Y_%m_%d_%H%M%S")
     name = name + now + ".csv"
+    for key in i_dict:
+        for subkey in i_dict[key]:
+            val = i_dict[key][subkey]
+            if not val:
+                i_dict[key][subkey] = ''
     with open(name, mode='w+', newline='') as f:
         writer = csv.writer(f, delimiter=',')
-        writer.writerow(list(d_list[0].keys()))
-        for line in d_list:
-            writer.writerow(list(line.values()))
+        first_key = list(i_dict.keys())[0]
+        writer.writerow(['Internal ID'] +
+                        list(i_dict[first_key].keys()))
+        for key in i_dict:
+            line = [key] + list(i_dict[key].values())
+            writer.writerow(line)
