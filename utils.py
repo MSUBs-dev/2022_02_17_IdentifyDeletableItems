@@ -1,11 +1,17 @@
 import chardet
-import glob
 import time
 import csv
 import os
 
 
 def load_csv(path: str, delimiter=',', quotechar='"') -> list:
+    """
+    Loads CSV data from a path
+    :param path: path of the CSV file
+    :param delimiter: type of separator used in CSV
+    :param quotechar: type of character used for quoting
+    :return: list of lists containing CSV data
+    """
     out_data = []
     if not os.path.exists(path):
         print(f'{path} not found')
@@ -35,6 +41,11 @@ def load_csv(path: str, delimiter=',', quotechar='"') -> list:
 
 
 def llist_to_dlist(l_list: list) -> list:
+    """
+    Converts list of lists into list of dictionaries
+    :param l_list: list of lists
+    :return: list of dictionaries
+    """
     out_data = []
     headers = l_list.pop(0)
     for sublist in l_list:
@@ -46,6 +57,12 @@ def llist_to_dlist(l_list: list) -> list:
 
 
 def dlist_to_dict(dlist: list, key) -> dict:
+    """
+    Converts list of dictionaries into single dictionary
+    :param dlist: list of dictionaries
+    :param key: the key from each dict whose value will be the output dictionary key
+    :return: consolidated dictionary
+    """
     out_data = {}
     for item in dlist:
         temp = dict(item)
@@ -55,6 +72,12 @@ def dlist_to_dict(dlist: list, key) -> dict:
 
 
 def export_csv(i_dict: dict, name: str) -> None:
+    """
+    Exports dictionary to CSV file
+    :param i_dict: input dictionary
+    :param name: the name of the output file
+    :return: None
+    """
     if name.endswith('.csv'):
         name = name.replace('.csv', '')
     now = time.strftime("_%Y_%m_%d_%H%M%S")

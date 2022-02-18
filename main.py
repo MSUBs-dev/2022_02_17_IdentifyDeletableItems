@@ -6,7 +6,12 @@ from utils import load_csv
 from pprint import pprint
 
 
-def filter_to_books(i_dict):
+def filter_to_books(i_dict: dict) -> dict:
+    """
+    Filters dictionary to only items that appear to be textbooks using naming convention
+    :param i_dict: item dictionary -- internal id as primary key
+    :return: dictionary of filtered results
+    """
     out_data = {}
     for k in i_dict:
         nme = i_dict[k]['Name']
@@ -38,6 +43,7 @@ if __name__ == '__main__':
         parent = all_items[key]['Parent IID']
         if parent:
             all_items[parent]['Children'].add(key)
+
     print('All Items:', len(all_items))
     to_be_deleted = {}
     for key in all_items:
