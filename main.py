@@ -14,7 +14,7 @@ def filter_to_books(i_dict):
         typ = typ.lower()
         typ = typ.split('-')[-1]
         if typ in ['n', 'u', 'p', 'rs']:
-            out_data[key] = i_dict[key]
+            out_data[k] = i_dict[k]
     return out_data
 
 
@@ -38,7 +38,7 @@ if __name__ == '__main__':
         parent = all_items[key]['Parent IID']
         if parent:
             all_items[parent]['Children'].add(key)
-
+    print('All Items:', len(all_items))
     to_be_deleted = {}
     for key in all_items:
         age = all_items[key]['Age']
@@ -51,8 +51,9 @@ if __name__ == '__main__':
                 and (not chdrn or not any([all_items[k]['Bad'] for k in chdrn])) \
                 and not all_items.get(prent, {}).get('Bad', False):
             to_be_deleted[key] = all_items[key]
+    print('Deletable items:', len(to_be_deleted))
     tbd = filter_to_books(to_be_deleted)
+    print('Deletable Books:', len(tbd))
     export_csv(tbd, 'out/delete')
-    print(len(all_items))
-    print(len(to_be_deleted))
-    print(len(all_items) - len(to_be_deleted))
+    print('Remaining Items:',
+          len(all_items) - len(tbd))
